@@ -1,0 +1,25 @@
+﻿@model IEnumerable<WebProje.Entities.Category>
+
+@{
+    ViewData["Title"] = "Kategoriler";
+}
+
+<h2>Kategoriler</h2>
+
+<a asp-action="Create" class="btn btn-primary">Yeni Kategori Ekle</a>
+
+<table class="table mt-3">
+    <thead>
+        <tr>
+            <th>Ad</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Name</td>
+            </tr>
+        }
+    </tbody>
+</table>

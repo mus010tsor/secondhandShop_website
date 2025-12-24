@@ -1,0 +1,63 @@
+﻿@model IEnumerable<WebProje.Entities.Product>
+@using System.Security.Claims
+
+@{
+    ViewData["Title"] = "İlanlar";
+}
+
+<h2>İlanlar</h2>
+
+@if (User.Identity!.IsAuthenticated)
+{
+    <a asp-action="Create" class="btn btn-primary mb-3">Yeni İlan Ekle</a>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Başlık</th>
+            <th>Kategori</th>
+            <th>Fiyat</th>
+            <th>Satıcı</th>
+            <th>Durum / İşlem</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Title</td>
+                <td>@item.Category?.Name</td>
+                <td>@item.Price ₺</td>
+                <td>@item.Seller?.Email</td>
+
+                <td>
+                    @if (item.IsSold)
+                    {
+                        <span class="badge bg-secondary">Satıldı</span>
+                    }
+                    else if (
+                    User.Identity.IsAuthenticated &&
+                    item.SellerId != User.FindFirstValue(ClaimTypes.NameIdentifier)
+                    )
+                    {
+                        <form asp-action="Buy"
+                              asp-route-id="@item.Id"
+                              method="post"
+                              class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-success btn-sm">
+                                Satın Al
+                            </button>
+                        </form>
+                    }
+                    else
+                    {
+                        <span class="text-muted">—</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
